@@ -1,0 +1,136 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  	<properties>
+		<aws.version>2.10.54</aws.version>
+	</properties>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>osgi.software.amazon.awssdk</groupId>
+  <artifactId>aws-sdk-java</artifactId>
+  <version>${aws.version}-SNAPSHOT</version>
+  
+  	<dependencies>
+<!-- 		<dependency> -->
+<!-- 			<groupId>software.amazon.awssdk</groupId> -->
+<!-- 			<artifactId>s3</artifactId> -->
+<!-- 			<version>${aws.version}</version> -->
+<!-- 			<scope>provided</scope> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>software.amazon.awssdk</groupId> -->
+<!-- 			<artifactId>auth</artifactId> -->
+<!-- 			<version>${aws.version}</version> -->
+<!-- 			<scope>provided</scope> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>aws-sdk-java</artifactId>
+			<version>${aws.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- This will make Felix scan the library for imports -->
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-sources</id>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<outputDirectory>${project.build.directory}/sources</outputDirectory>
+							<artifactItems>
+								<artifactItem>
+									<groupId>software.amazon.awssdk</groupId>
+									<artifactId>s3</artifactId>
+									<version>${aws.version}</version>
+									<classifier>sources</classifier>
+								</artifactItem>
+								<artifactItem>
+									<groupId>software.amazon.awssdk</groupId>
+									<artifactId>auth</artifactId>
+									<version>${aws.version}</version>
+									<classifier>sources</classifier>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- This configuration will tell the Felix bundle plugin to generate 
+				the bundle for the library. The original library will be embedded in the 
+				newly created bundle jar -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>4.2.1</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<!-- All library packages that are supposed to be exposed must be declared 
+							as exports -->
+						<Export-Package>
+							software.amazon.awssdk;version=${project.version},
+							software.amazon.awssdk.auth.credentials,
+							software.amazon.awssdk.awscore.client.builder,
+							software.amazon.awssdk.core.sync,
+							software.amazon.awssdk.regions,
+							software.amazon.awssdk.services.s3,
+							software.amazon.awssdk.services.s3.model,
+						</Export-Package>
+						<!-- You can specify additional imports that were not found by Felix -->
+						<Import-Package>
+							software.amazon.awssdk,
+							javax.net.ssl,
+							javax.naming,
+							javax.crypto,
+							!org.apache.http,
+							!com.google.protobuf,
+							!com.google.protobuf.nano,
+							!com.jcraft.jzlib,
+							!com.ning.compress,
+							!com.ning.compress.lzf,
+							!com.ning.compress.lzf.util,
+							!com.oracle.svm.core.annotate,
+							!io.netty.internal.tcnative,
+							!kotlin,
+							!lzma.sdk,
+							!lzma.sdk.lzma,
+							!net.jpountz.lz4,
+							!net.jpountz.xxhash,
+							!org.apache.avalon.framework.logger,
+							!org.apache.log,
+							!org.apache.logging.log4j,
+							!org.apache.logging.log4j.message,
+							!org.apache.logging.log4j.spi,
+							!org.bouncycastle.asn1.x500,
+							!org.bouncycastle.cert,
+							!org.bouncycastle.cert.jcajce,
+							!org.bouncycastle.jce.provider,
+							!org.bouncycastle.operator,
+							!org.bouncycastle.operator.jcajce,
+							!org.conscrypt,
+							!org.eclipse.jetty.alpn,
+							!org.eclipse.jetty.npn,
+							!org.jboss.marshalling,
+							!scala.util,
+							!sun.misc,
+							!sun.security.ssl,
+							!sun.security.util,
+							!sun.security.x509,
+						</Import-Package>
+						<!-- Bundle metadata for the newly created bundle -->
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Vendor>Example.com</Bundle-Vendor>
+						<!-- We embed the original library -->
+						<Embed-Dependency>*;inline=true</Embed-Dependency>
+						<Embed-Transitive>true</Embed-Transitive>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
