@@ -2,13 +2,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<properties>
-		<aws.version>2.10.57-SNAPSHOT</aws.version>
+		<aws.version>2.13.0</aws.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>software.amazon.awssdk</groupId>
 	<artifactId>aws-sdk-java-v2-osgi</artifactId>
-	<version>1.0.0</version>
+	<version>${aws.version}</version>
 	<build>
 		<plugins>
 			<plugin>
